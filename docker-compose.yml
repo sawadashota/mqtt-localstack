@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  broker:
+    image: eclipse-mosquitto:1.6.12
+  publisher:
+    image: golang:1.15-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - gomod:/go/pkg/mod
+    command: go run main.go publisher
+    depends_on:
+      - broker
+
+  subscriber:
+    image: golang:1.15-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - gomod:/go/pkg/mod
+    command: go run main.go subscriber
+    depends_on:
+      - broker
+
+volumes:
+  gomod:
